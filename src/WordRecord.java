@@ -1,3 +1,6 @@
+/**
+ * Class to keep record of the words 
+ */
 public class WordRecord {
 	private String text;
 	private  int x;
@@ -6,13 +9,15 @@ public class WordRecord {
 	private boolean dropped;
 	
 	private int fallingSpeed;
-	private static int maxWait=1500;
-	private static int minWait=100;
+	private static int maxWait=15;
+	private static int minWait=5;
 
 	public static WordDictionary dict;
 	
 
-	
+	/**
+	 * Constructor setting the initial values of the word
+	 */
 	WordRecord() {
 		text="";
 		x=0;

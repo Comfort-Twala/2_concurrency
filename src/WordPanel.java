@@ -3,18 +3,25 @@ import java.awt.Graphics;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
-public class WordPanel extends JPanel implements Runnable {
+/**
+ * Class where the words are displayed and contained.
+ */
+public class WordPanel extends JPanel implements Runnable, ActionListener {
 		public static volatile boolean done;
 		private WordRecord[] words;
 		private int noWords;
 		private int maxY;
 
-		
+		/**
+		 * Method that paints Components onto the GUI
+		 */
 		public void paintComponent(Graphics g) {
 		    int width = getWidth();
 		    int height = getHeight();
@@ -27,21 +34,40 @@ public class WordPanel extends JPanel implements Runnable {
 		   //draw the words
 		   //animation must be added 
 		    for (int i=0;i<noWords;i++){	    	
-		    	//g.drawString(words[i].getWord(),words[i].getX(),words[i].getY());	
-		    	g.drawString(words[i].getWord(),words[i].getX(),words[i].getY()+20);  //y-offset for skeleton so that you can see the words	
+		    	g.drawString(words[i].getWord(),words[i].getX(),words[i].getY());	
 		    }
 		   
 		  }
 		
+		/**
+		 * Constructor initialising the panel
+		 * @param words
+		 * @param maxY
+		 */
 		WordPanel(WordRecord[] words, int maxY) {
-			this.words=words; //will this work?
+			this.words=words;
 			noWords = words.length;
 			done=false;
 			this.maxY=maxY;		
 		}
 		
+		/**
+		 * Method to start up the Wordpanel
+		 */
 		public void run() {
-			//add in code to animate this
+			Timer timer = new Timer(150, this);
+			timer.start();
+		}
+
+		/**
+		 * ActionListener Method for the Word panel class
+		 */
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			for (WordRecord word : words) {
+				word.drop(word.getSpeed());
+			}
+			repaint();
 		}
 
 	}

@@ -1,8 +1,14 @@
+/**
+ * Class to keep track and manipulate the score of the program
+ */
 public class Score {
 	private int missedWords;
 	private int caughtWords;
 	private int gameScore;
 	
+	/**
+	 * Default constructor setting the values
+	 */
 	Score() {
 		missedWords=0;
 		caughtWords=0;
