@@ -1,9 +1,11 @@
+import java.util.Arrays;
+
 /**
  * Class to keep track of all the words involved in the program
  */
 public class WordDictionary {
 	int size;
-	static String[] theDict= {"litchi","banana","apple","mango","pear","orange","strawberry",
+	String[] theDict= {"litchi","banana","apple","mango","pear","orange","strawberry",
 		"cherry","lemon","apricot","peach","guava","grape","kiwi","quince","plum","prune",
 		"cranberry","blueberry","rhubarb","fruit","grapefruit","kumquat","tomato","berry",
 		"boysenberry","loquat","avocado"}; //default dictionary
@@ -33,7 +35,23 @@ public class WordDictionary {
 	 */
 	public synchronized String getNewWord() {
 		int wdPos= (int)(Math.random() * size);
-		return theDict[wdPos];
+		// return theDict[wdPos];
+		String word = theDict[wdPos];
+		System.out.println(Arrays.asList(theDict));
+		if (word.equals("")){
+			return getNewWord();
+		}
+		return word;	
 	}
-	
+
+	public synchronized String caughtWord(String caught) {
+		for (int i = 0; i < theDict.length; i++){
+			if (theDict[i].equals(caught)){
+				theDict[i] = "";
+			}
+		}
+		return getNewWord();
+	}
+
+
 }
