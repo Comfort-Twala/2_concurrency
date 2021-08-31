@@ -14,7 +14,7 @@ import java.util.concurrent.*;
 /**
  * Main App driver class
  */
-public class WordApp {
+public class WordApp implements ActionListener {
 //shared variables
 	static int noWords=4;
 	static int totalWords;
@@ -52,7 +52,6 @@ public class WordApp {
 		g.add(w); 
 		
 		
-		
 		JPanel txt = new JPanel();
 		txt.setLayout(new BoxLayout(txt, BoxLayout.LINE_AXIS)); 
 		JLabel caught =new JLabel("Caught: " + score.getCaught() + "    ");
@@ -62,57 +61,91 @@ public class WordApp {
 		txt.add(missed);
 		txt.add(scr);
 		
-		//[snip]
 		
 		final JTextField textEntry = new JTextField("",20);
 		textEntry.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent evt) {
 				String text = textEntry.getText();
-				//[snip]
+				for (WordRecord word: words){
+					if (word.matchWord(text)){
+						score.caughtWord(text.length());
+						updateTxt();
+					}
+				}
+				System.out.println(score.getScore());
 				textEntry.setText("");
 				textEntry.requestFocus();
 			}
-	   });
-	   
-	   txt.add(textEntry);
-	   txt.setMaximumSize( txt.getPreferredSize() );
-	   g.add(txt);
-	   
-	   JPanel b = new JPanel();
-	   b.setLayout(new BoxLayout(b, BoxLayout.LINE_AXIS)); 
-	   JButton startB = new JButton("Start");;
+			
+			public void updateTxt() {
+				caught.setText("Caught: " + score.getCaught() + "    ");;
+				scr.setText("Score:" + score.getScore()+ "    ");
+			}
+		});
 		
-	   // add the listener to the jbutton to handle the "pressed" event
+		
+		txt.add(textEntry);
+		txt.setMaximumSize( txt.getPreferredSize() );
+		g.add(txt);
+		
+		JPanel b = new JPanel();
+		b.setLayout(new BoxLayout(b, BoxLayout.LINE_AXIS)); 
+		JButton startB = new JButton("Start");;
+		JButton endB = new JButton("End");;
+		endB.setEnabled(false);
+		
+		// add the listener to the jbutton to handle the "pressed" event
 		startB.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				w.run();
+				SwingUtilities.invokeLater(w);
+				startB.setEnabled(false);
+				endB.setEnabled(true);
+				startB.setText("Start");
 				textEntry.requestFocus();  //return focus to the text entry field
+				caught.setText("Caught: " + score.getCaught() + "    ");;
+				scr.setText("Score:" + score.getScore()+ "    ");
 			}
 		});
-		JButton endB = new JButton("End");;
 		
 		// add the listener to the jbutton to handle the "pressed" event
 		endB.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				//[snip]
+				startB.setText("Restart");
+				startB.setEnabled(true);
+				endB.setEnabled(false);
+				for (WordRecord word: words){
+					word.resetWord();
+				}
+				score.resetScore();
+				w.stop();
+				w.repaint();
 			}
 		});
 		
+		JButton quitB = new JButton("Quit");;
+		quitB.setBackground(Color.RED);
+		quitB.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+
 		b.add(startB);
 		b.add(endB);
+		b.add(quitB);
 		
 		g.add(b);
     	
-      frame.setLocationRelativeTo(null);  // Center window on screen.
-      frame.add(g); //add contents to window
-      frame.setContentPane(g);     
-	  //frame.pack();  // don't do this - packs it into small space
-      frame.setVisible(true);
+		frame.setLocationRelativeTo(null);  // Center window on screen.
+		frame.add(g); //add contents to window
+		frame.setContentPane(g);     
+		//frame.pack();  // don't do this - packs it into small space
+		frame.setVisible(true);
 	}
 
 	/**
@@ -125,12 +158,12 @@ public class WordApp {
 		try {
 			Scanner dictReader = new Scanner(new FileInputStream(filename));
 			int dictLength = dictReader.nextInt();
-			System.out.println("read '" + dictLength+"'");
+			// System.out.println("read '" + dictLength+"'");
 
 			dictStr=new String[dictLength];
 			for (int i=0;i<dictLength;i++) {
 				dictStr[i]=new String(dictReader.next());
-				System.out.println(i+ " read '" + dictStr[i]+"'"); //for checking
+				// System.out.println(i+ " read '" + dictStr[i]+"'"); //for checking
 			}
 			dictReader.close();
 		} catch (IOException e) {
@@ -139,14 +172,29 @@ public class WordApp {
 	    }
 		return dictStr;
 	}
+
+	public void start() {
+		Timer t = new Timer(100, this);
+		t.start();
+	}
 	
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		for (WordRecord word: words){
+			if (word.dropped()){
+				score.missedWord();
+				// updateTxt();
+			}
+		}
+		
+	}
+
 
 	/**
 	 * Main driver Method to run the game
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
 		//deal with command line arguments
 		totalWords=Integer.parseInt(args[0]);  //total words to fall
 		noWords=Integer.parseInt(args[1]); // total words falling at any point
@@ -155,24 +203,25 @@ public class WordApp {
 		if (tmpDict!=null)
 			dict= new WordDictionary(tmpDict);
 			
-			WordRecord.dict=dict; //set the class dictionary for the words.
+		WordRecord.dict=dict; //set the class dictionary for the words.
 			
-			words = new WordRecord[noWords];  //shared array of current words
+		words = new WordRecord[noWords];  //shared array of current words
 			
-			//[snip]
-			
-			setupGUI(frameX, frameY, yLimit);  
-			//Start WordPanel thread - for redrawing animation
-			
-			int x_inc=(int)frameX/noWords;
-			//initialize shared array of current words
-			
-			for (int i=0;i<noWords;i++) {
-				words[i]=new WordRecord(dict.getNewWord(),i*x_inc,yLimit);
-			}
-			for (WordRecord word : words) {
-				System.out.println(word.getWord());
-			}
+		//[snip]
+		
+		setupGUI(frameX, frameY, yLimit);  
+		//Start WordPanel thread - for redrawing animation
+		
+		int x_inc=(int)frameX/noWords;
+		//initialize shared array of current words
+		
+		for (int i=0;i<noWords;i++) {
+			words[i]=new WordRecord(dict.getNewWord(),i*x_inc,yLimit);
 		}
+		for (WordRecord word : words) {
+			System.out.println(word.getWord() + ":" + word.getWord().length());
+		}
+	}
+
 
 }
