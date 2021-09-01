@@ -1,12 +1,16 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
-
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.*;
 //model is separate from the view.
@@ -14,7 +18,7 @@ import java.util.concurrent.*;
 /**
  * Main App driver class
  */
-public class WordApp implements ActionListener {
+public class WordApp {
 //shared variables
 	static int noWords=4;
 	static int totalWords;
@@ -30,7 +34,11 @@ public class WordApp implements ActionListener {
 	static 	Score score = new Score();
 
 	static WordPanel w;
+	static Timer missedTimer;
+	static Clip caughtAudio, missedAudio;
+	static AudioInputStream caughtAudioStream, missedAudioStream;
 	
+
 	
 	/**
 	 * Building the GUI for the program
@@ -61,19 +69,32 @@ public class WordApp implements ActionListener {
 		txt.add(missed);
 		txt.add(scr);
 		
-		
+			
 		final JTextField textEntry = new JTextField("",20);
 		textEntry.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent evt) {
 				String text = textEntry.getText();
+				boolean used = false;
 				for (WordRecord word: words){
 					if (word.matchWord(text)){
-						score.caughtWord(text.length());
-						updateTxt();
+						if (!(word.getWord().equals(""))) {
+							used = true;
+						}
 					}
 				}
-				System.out.println(score.getScore());
+				if (used){
+					try {
+						caughtAudioStream = AudioSystem.getAudioInputStream(new File("assets/caught.wav").getAbsoluteFile());
+						caughtAudio = AudioSystem.getClip();
+						caughtAudio.open(caughtAudioStream);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					caughtAudio.start();
+					score.caughtWord(text.length());
+					updateTxt();
+				}
 				textEntry.setText("");
 				textEntry.requestFocus();
 			}
@@ -101,11 +122,35 @@ public class WordApp implements ActionListener {
 			public void actionPerformed(ActionEvent e)
 			{
 				SwingUtilities.invokeLater(w);
+				SwingUtilities.invokeLater(new Runnable(){
+					@Override
+					public void run() {
+						missedTimer = new Timer(300, new ActionListener(){
+							public void actionPerformed(ActionEvent e){
+								for (int i = 0; i < w.getDropped(); i++){
+									score.missedWord();
+									missed.setText("Missed:" + score.getMissed()+ "    ");
+									try {
+										missedAudioStream = AudioSystem.getAudioInputStream(new File("assets/missed.wav").getAbsoluteFile());
+										missedAudio = AudioSystem.getClip();
+										missedAudio.open(missedAudioStream);
+									} catch (Exception err) {
+										err.printStackTrace();
+									}
+									missedAudio.start();
+								}
+								w.setDropped(0);
+							}
+						});
+						missedTimer.start();
+					}				
+				});
 				startB.setEnabled(false);
 				endB.setEnabled(true);
 				startB.setText("Start");
 				textEntry.requestFocus();  //return focus to the text entry field
 				caught.setText("Caught: " + score.getCaught() + "    ");;
+				missed.setText("Missed:" + score.getMissed()+ "    ");
 				scr.setText("Score:" + score.getScore()+ "    ");
 			}
 		});
@@ -118,10 +163,12 @@ public class WordApp implements ActionListener {
 				startB.setText("Restart");
 				startB.setEnabled(true);
 				endB.setEnabled(false);
+				dict.reset();
 				for (WordRecord word: words){
 					word.resetWord();
 				}
 				score.resetScore();
+				missedTimer.stop();
 				w.stop();
 				w.repaint();
 			}
@@ -140,13 +187,14 @@ public class WordApp implements ActionListener {
 		b.add(quitB);
 		
 		g.add(b);
-    	
+   	
 		frame.setLocationRelativeTo(null);  // Center window on screen.
 		frame.add(g); //add contents to window
 		frame.setContentPane(g);     
 		//frame.pack();  // don't do this - packs it into small space
 		frame.setVisible(true);
 	}
+
 
 	/**
 	 * Method to load words from file to a dictionary
@@ -173,23 +221,7 @@ public class WordApp implements ActionListener {
 		return dictStr;
 	}
 
-	public void start() {
-		Timer t = new Timer(100, this);
-		t.start();
-	}
 	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		for (WordRecord word: words){
-			if (word.dropped()){
-				score.missedWord();
-				// updateTxt();
-			}
-		}
-		
-	}
-
-
 	/**
 	 * Main driver Method to run the game
 	 * @param args
@@ -210,18 +242,17 @@ public class WordApp implements ActionListener {
 		//[snip]
 		
 		setupGUI(frameX, frameY, yLimit);  
-		//Start WordPanel thread - for redrawing animation
 		
 		int x_inc=(int)frameX/noWords;
 		//initialize shared array of current words
 		
-		for (int i=0;i<noWords;i++) {
-			words[i]=new WordRecord(dict.getNewWord(),i*x_inc,yLimit);
+		for (int i=0; i<noWords; i++){
+			words[i] = new WordRecord(dict.getNewWord(),i*x_inc,yLimit);
 		}
+
 		for (WordRecord word : words) {
 			System.out.println(word.getWord() + ":" + word.getWord().length());
 		}
+
 	}
-
-
 }
