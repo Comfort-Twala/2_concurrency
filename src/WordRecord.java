@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Class to keep record of the words 
  */
@@ -13,6 +15,7 @@ public class WordRecord {
 	private static int minWait=5;
 
 	public static WordDictionary dict;
+	// public static String[] onscreen;
 	
 
 	/**
@@ -27,6 +30,7 @@ public class WordRecord {
 		fallingSpeed=(int)(Math.random() * (maxWait-minWait)+minWait); 
 	}
 	
+	
 	WordRecord(String text) {
 		this();
 		this.text=text;
@@ -38,7 +42,7 @@ public class WordRecord {
 		this.maxY=maxY;
 	}
 	
-// all getters and setters must be synchronized
+	// all getters and setters must be synchronized
 	public synchronized  void setY(int y) {
 		if (y>maxY) {
 			y=maxY;
@@ -54,7 +58,7 @@ public class WordRecord {
 	public synchronized  void setWord(String text) {
 		this.text=text;
 	}
-
+	
 	public synchronized  String getWord() {
 		return text;
 	}
@@ -70,7 +74,7 @@ public class WordRecord {
 	public synchronized  int getSpeed() {
 		return fallingSpeed;
 	}
-
+	
 	public synchronized void setPos(int x, int y) {
 		setY(y);
 		setX(x);
@@ -78,27 +82,32 @@ public class WordRecord {
 	public synchronized void resetPos() {
 		setY(0);
 	}
-
+	
 	public synchronized void resetWord() {
 		resetPos();
 		text=dict.getNewWord();
 		dropped=false;
 		fallingSpeed=(int)(Math.random() * (maxWait-minWait)+minWait); 
-		//System.out.println(getWord() + " falling speed = " + getSpeed());
-
 	}
+
 	
+	public synchronized void resetCaught(String word) {
+		resetPos();
+		text=dict.caughtWord(word);
+		dropped=false;
+		fallingSpeed=(int)(Math.random() * (maxWait-minWait)+minWait); 
+	}
+
 	public synchronized boolean matchWord(String typedText) {
-		//System.out.println("Matching against: "+text);
 		if (typedText.equals(this.text)) {
-			resetWord();
+			resetCaught(typedText);
 			return true;
 		}
-		else
+		else {
 			return false;
+		}
 	}
 	
-
 	public synchronized  void drop(int inc) {
 		setY(y+inc);
 	}
@@ -106,5 +115,4 @@ public class WordRecord {
 	public synchronized  boolean dropped() {
 		return dropped;
 	}
-
 }
