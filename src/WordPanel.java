@@ -3,20 +3,19 @@ import java.awt.Graphics;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.CountDownLatch;
-
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 /**
  * Class where the words are displayed and contained.
  */
-public class WordPanel extends JPanel implements Runnable, ActionListener {
+public class WordPanel extends JPanel implements Runnable {
 	public static volatile boolean done;
 	private WordRecord[] words;
 	private int noWords;
 	private int maxY;
+	private Timer timer;
+	private int dropped;
 
 	/**
 	 * Method that paints Components onto the GUI
@@ -38,6 +37,14 @@ public class WordPanel extends JPanel implements Runnable, ActionListener {
 		
 	}
 	
+	public int getDropped() {
+		return dropped;
+	}
+
+	public void setDropped(int dropped) {
+		this.dropped = dropped;
+	}
+
 	/**
 	 * Constructor initialising the panel
 	 * @param words
@@ -47,29 +54,38 @@ public class WordPanel extends JPanel implements Runnable, ActionListener {
 		this.words=words;
 		noWords = words.length;
 		done=false;
-		this.maxY=maxY;		
+		this.maxY=maxY;
 	}
 	
 	/**
 	 * Method to start up the Wordpanel
 	 */
+	@Override
 	public void run() {
-		Timer timer = new Timer(150, this);
+		timer = new Timer(300, animation);
 		timer.start();
+	}
+
+	public void stop() {
+		timer.stop();
 	}
 
 	/**
 	 * ActionListener Method for the Word panel class
 	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		for (WordRecord word : words) {
-			word.drop(word.getSpeed());
-			if (word.dropped()){
-				word.resetWord();
+	ActionListener animation = new ActionListener(){
+		public void actionPerformed(ActionEvent e) {
+			for (WordRecord word : words) {
+				word.drop(word.getSpeed());
+				if (word.dropped()){
+					if (!(word.getWord().equals(""))) {
+						dropped++;
+					}
+					word.resetWord();	
+				}
 			}
+			repaint();
 		}
-		repaint();
-	}
+	};
 
 }
