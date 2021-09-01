@@ -9,6 +9,7 @@ public class WordDictionary {
 		"cherry","lemon","apricot","peach","guava","grape","kiwi","quince","plum","prune",
 		"cranberry","blueberry","rhubarb","fruit","grapefruit","kumquat","tomato","berry",
 		"boysenberry","loquat","avocado"}; //default dictionary
+	String[] original;
 	
 	/**
 	 * Constructor to initialise the dictionary and populate the dictionary
@@ -17,8 +18,10 @@ public class WordDictionary {
 	WordDictionary(String [] tmp) {
 		size = tmp.length;
 		theDict = new String[size];
+		original = new String[size];
 		for (int i=0;i<size;i++) {
 			theDict[i] = tmp[i];
+			original[i] = tmp[i];
 		}
 	}
 	
@@ -34,14 +37,19 @@ public class WordDictionary {
 	 * @return randomWord
 	 */
 	public synchronized String getNewWord() {
-		int wdPos= (int)(Math.random() * size);
-		// return theDict[wdPos];
-		String word = theDict[wdPos];
-		System.out.println(Arrays.asList(theDict));
-		if (word.equals("")){
-			return getNewWord();
+		try{
+
+			int wdPos= (int)(Math.random() * size);
+			// return theDict[wdPos];
+			String word = theDict[wdPos];
+			System.out.println(Arrays.asList(theDict));
+			if (word.equals("")){
+				return getNewWord();
+			}
+			return word;	
+		} catch (Exception e){
+			return "";
 		}
-		return word;	
 	}
 
 	public synchronized String caughtWord(String caught) {
@@ -51,6 +59,12 @@ public class WordDictionary {
 			}
 		}
 		return getNewWord();
+	}
+
+	public void reset() {
+		for (int i = 0; i < size; i++) {
+			theDict[i] = original[i];
+		}
 	}
 
 
