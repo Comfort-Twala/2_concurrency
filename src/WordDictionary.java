@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /**
  * Class to keep track of all the words involved in the program
  */
@@ -37,19 +35,12 @@ public class WordDictionary {
 	 * @return randomWord
 	 */
 	public synchronized String getNewWord() {
-		try{
-
-			int wdPos= (int)(Math.random() * size);
-			// return theDict[wdPos];
-			String word = theDict[wdPos];
-			System.out.println(Arrays.asList(theDict));
-			if (word.equals("")){
-				return getNewWord();
-			}
-			return word;	
-		} catch (Exception e){
-			return "";
+		int wdPos= (int)(Math.random() * size);
+		String word = theDict[wdPos];
+		if (word.equals("")){
+			return getNewWord();
 		}
+		return word;
 	}
 
 	public synchronized String caughtWord(String caught) {
