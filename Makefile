@@ -4,17 +4,15 @@
 JAVA=/usr/bin/java
 JAVAC=/usr/bin/javac
 JAVADOC=/usr/bin/javadoc
-PYTHON=/usr/bin/python3
 .SUFFIXES: .java .class
 SRCDIR=src
 BINDIR=bin
 DOCDIR=doc
-SCRIPTDIR=script
 
 $(BINDIR)/%.class:$(SRCDIR)/%.java
-		$(JAVAC) -d $(BINDIR)/ *.java
+		$(JAVAC) -d $(BINDIR)/ $(SRCDIR)/*.java
 
-CLASSES=Score.class WordDictionary.class WorldRecord.class WorldPanel.class WordApp.class
+CLASSES=Score.class WordDictionary.class WordRecord.class WordPanel.class WordApp.class
 
 CLASS_FILES=$(CLASSES:%.class=$(BINDIR)/%.class)
 
