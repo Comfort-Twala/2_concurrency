@@ -62,7 +62,7 @@ public class WordPanel extends JPanel implements Runnable {
 	 */
 	@Override
 	public void run() {
-		timer = new Timer(300, animation);
+		timer = new Timer(250, animation);
 		timer.start();
 	}
 
@@ -78,9 +78,7 @@ public class WordPanel extends JPanel implements Runnable {
 			for (WordRecord word : words) {
 				word.drop(word.getSpeed());
 				if (word.dropped()){
-					if (!(word.getWord().equals(""))) {
-						dropped++;
-					}
+					dropped++;
 					word.resetWord();	
 				}
 			}
