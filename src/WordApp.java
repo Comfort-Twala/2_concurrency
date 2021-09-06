@@ -1,7 +1,6 @@
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 
 import java.awt.*;
@@ -10,9 +9,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Scanner;
-import java.util.concurrent.*;
 //model is separate from the view.
 
 /**
@@ -35,8 +32,8 @@ public class WordApp {
 
 	static WordPanel w;
 	static Timer missedTimer;
-	static Clip caughtAudio, missedAudio;
-	static AudioInputStream caughtAudioStream, missedAudioStream;
+	static Clip inputAudio;
+	static AudioInputStream inputAudioStream;
 	
 
 	
@@ -59,6 +56,21 @@ public class WordApp {
 		w.setSize(frameX,yLimit+100);
 		g.add(w); 
 		
+		JOptionPane.showMessageDialog(null, 
+			"""
+			Welcome to WordGame!
+			
+			Rules are simple. You Gotta Catch 'em all!
+			- Catch all the words to win
+			- Miss total amount of words to lose
+			- Once word is caught it won't come up again
+
+			Enjoy!
+			"""
+		);
+
+		JButton startB = new JButton("Start");;
+		JButton endB = new JButton("End");;
 		
 		JPanel txt = new JPanel();
 		txt.setLayout(new BoxLayout(txt, BoxLayout.LINE_AXIS)); 
@@ -78,21 +90,35 @@ public class WordApp {
 				boolean used = false;
 				for (WordRecord word: words){
 					if (word.matchWord(text)){
-						if (!(word.getWord().equals(""))) {
+						if (!(word.getWord().equals(" "))) {
 							used = true;
 						}
 					}
 				}
 				if (used){
 					try {
-						caughtAudioStream = AudioSystem.getAudioInputStream(new File("assets/caught.wav").getAbsoluteFile());
-						caughtAudio = AudioSystem.getClip();
-						caughtAudio.open(caughtAudioStream);
+						inputAudioStream = AudioSystem.getAudioInputStream(new File("assets/caught.wav").getAbsoluteFile());
+						inputAudio = AudioSystem.getClip();
+						inputAudio.open(inputAudioStream);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					caughtAudio.start();
+					inputAudio.start();
 					score.caughtWord(text.length());
+					if (score.getCaught() == totalWords){
+						try {
+							inputAudioStream = AudioSystem.getAudioInputStream(new File("assets/gta-mission-passed.wav").getAbsoluteFile());
+							inputAudio = AudioSystem.getClip();
+							inputAudio.open(inputAudioStream);
+						} catch (Exception err) {
+							err.printStackTrace();
+						}
+						inputAudio.start();
+						endB.doClick();
+						JOptionPane.showMessageDialog(null, 
+							"You WON !\nScore: " + score.getScore() + "\nCaught: " + score.getCaught() + "\nMissed: " + score.getMissed() + "\nTotal: " + score.getTotal()
+						);
+					}
 					updateTxt();
 				}
 				textEntry.setText("");
@@ -112,8 +138,6 @@ public class WordApp {
 		
 		JPanel b = new JPanel();
 		b.setLayout(new BoxLayout(b, BoxLayout.LINE_AXIS)); 
-		JButton startB = new JButton("Start");;
-		JButton endB = new JButton("End");;
 		endB.setEnabled(false);
 		
 		// add the listener to the jbutton to handle the "pressed" event
@@ -131,15 +155,29 @@ public class WordApp {
 									score.missedWord();
 									missed.setText("Missed:" + score.getMissed()+ "    ");
 									try {
-										missedAudioStream = AudioSystem.getAudioInputStream(new File("assets/missed.wav").getAbsoluteFile());
-										missedAudio = AudioSystem.getClip();
-										missedAudio.open(missedAudioStream);
+										inputAudioStream = AudioSystem.getAudioInputStream(new File("assets/missed.wav").getAbsoluteFile());
+										inputAudio = AudioSystem.getClip();
+										inputAudio.open(inputAudioStream);
 									} catch (Exception err) {
 										err.printStackTrace();
 									}
-									missedAudio.start();
+									inputAudio.start();
 								}
 								w.setDropped(0);
+								if (score.getMissed() == totalWords){
+									try {
+										inputAudioStream = AudioSystem.getAudioInputStream(new File("assets/gta-death.wav").getAbsoluteFile());
+										inputAudio = AudioSystem.getClip();
+										inputAudio.open(inputAudioStream);
+									} catch (Exception err) {
+										err.printStackTrace();
+									}
+									inputAudio.start();
+									endB.doClick();
+									JOptionPane.showMessageDialog(null, 
+										"You Lost !\nScore: " + score.getScore() + "\nCaught: " + score.getCaught() + "\nMissed: " + score.getMissed() + "\nTotal: " + score.getTotal()
+									);
+								}
 							}
 						});
 						missedTimer.start();
@@ -208,11 +246,12 @@ public class WordApp {
 			int dictLength = dictReader.nextInt();
 			// System.out.println("read '" + dictLength+"'");
 
-			dictStr=new String[dictLength];
+			dictStr=new String[dictLength+1];
 			for (int i=0;i<dictLength;i++) {
 				dictStr[i]=new String(dictReader.next());
 				// System.out.println(i+ " read '" + dictStr[i]+"'"); //for checking
 			}
+			dictStr[dictLength] = new String("  ");
 			dictReader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
