@@ -1,0 +1,119 @@
+commit 44856de6fb935c7b1033e204a037931b36ea8e39
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Mon Sep 6 14:32:46 2021 +0200
+
+    Complete
+
+commit 88c55fc7e10aa1455434d6bee38c882b67b1d7bd
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Mon Sep 6 14:31:59 2021 +0200
+
+    Javadocs added
+
+commit 71ccb7770adbab76023e0743af35f6bfc2205c90
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Mon Sep 6 14:31:39 2021 +0200
+
+    Final class files compiled
+
+commit 06e90952acbad01d5c723579e5b9e78a1ad5420d
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Mon Sep 6 14:15:51 2021 +0200
+
+    Added game assets to game (sounds)
+
+commit 039d8f53df801f169a884209b20723f1b71860d8
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Mon Sep 6 14:14:39 2021 +0200
+
+    README Added!
+
+commit 3187f0926d663d838d679bfa5beec7bf9e0521bb
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Mon Sep 6 14:10:05 2021 +0200
+
+    Final Makefile
+
+commit 42c489dd705740a8abb772a58ec033b92f195a4a
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Mon Sep 6 14:08:43 2021 +0200
+
+    Added method to handle caught word
+
+commit 9f3fbe3c16ac8cd945778b3f001a43f9ddd65ac0
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Mon Sep 6 14:07:47 2021 +0200
+
+    Fine tuning animation speed by adjusting Thread timer delay
+
+commit a15326ace45e19a18abfb17c58ec9b9b17181f75
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Mon Sep 6 14:06:29 2021 +0200
+
+    Removed failed feature
+
+commit 3e44d7c9a8010eb8437370e7efdadf259d9a1425
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Thu Sep 2 00:35:03 2021 +0200
+
+    Added resetCaught method that resets words that have been caught and removes them from dictionary
+
+commit 45a28c1284bcbff50b79be0c75f67593e7718758
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Thu Sep 2 00:32:45 2021 +0200
+
+    Added dropped counter that missed count thread will keep track off with setter and getters
+
+commit c4975e23bdd031080a549da02d0dfa220c810e5f
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Thu Sep 2 00:30:28 2021 +0200
+
+    Modified getNewWord method to remove word from dictionary if it has been caught
+
+commit ea2b62bf93d520c962e51915096d67ff39c6e803
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Thu Sep 2 00:28:50 2021 +0200
+
+    Added Quit button functionaliy and game sounds for caught and missed
+
+commit 8a9675e367e9706714fccfa67544c9ad8bde328f
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Wed Sep 1 02:17:50 2021 +0200
+
+    Added reset dictionary functionality for new game
+
+commit c4d54383cb55abfdb58339173d9fead70b8751f1
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Wed Sep 1 01:31:43 2021 +0200
+
+    If word is caught it can't show up again
+
+commit 365ae71698c02a6e609ee9482fb97902dd6c0977
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Wed Sep 1 00:39:25 2021 +0200
+
+    Added Start/End Button functionalities
+
+commit c5d1fea091f73109657967f15063f6dccea92772
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Sat Aug 28 02:17:09 2021 +0200
+
+    Added falling animination by making WordPanel extend ActionListener and dropping words by intervals
+
+commit d1b7886f7e68b29c9d579cc05529cc3b6d77e604
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Sat Aug 28 00:11:34 2021 +0200
+
+    Basic Documentation of skeleton code
+
+commit 6ce81e45c6261e6a3e3f917e2e825a890094f62a
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Wed Aug 25 19:36:56 2021 +0200
+
+    Added Project Makefile
+
+commit d1c81c79131d31731dcc4462ff2d6c400d02473e
+Author: Comfort-Twala <kontreitroos@gmail.com>
+Date:   Wed Aug 25 19:28:34 2021 +0200
+
+    Skeleton code
