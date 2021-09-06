@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /**
  * Class to keep record of the words 
  */
@@ -15,7 +13,6 @@ public class WordRecord {
 	private static int minWait=5;
 
 	public static WordDictionary dict;
-	// public static String[] onscreen;
 	
 
 	/**
