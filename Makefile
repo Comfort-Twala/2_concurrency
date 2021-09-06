@@ -24,6 +24,8 @@ clean:
 run: $(CLASS_FILES)
 		$(JAVA) -cp $(BINDIR) WordApp $(tot_words) $(on_screen) $(dict)
 
+play: $(CLASS_FILES)
+		$(JAVA) -cp $(BINDIR) WordApp 10 5 example_dict.txt
 
 docs:
 		$(JAVADOC) -d $(DOCDIR) $(SRCDIR)/*

@@ -15,7 +15,7 @@ $ make clean
 ### run Program
 Default run which runs the game with default dictionary with a total of 10 words, and 5 on screen
 ```
-$ make run
+$ make play
 ```
 Run with custom text file which should be stored in dictionary folder.
 Specify total words, words on screen and the custom dictionary file.

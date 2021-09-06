@@ -114,10 +114,11 @@ public class WordApp {
 							err.printStackTrace();
 						}
 						inputAudio.start();
-						endB.doClick();
+						w.stop();
 						JOptionPane.showMessageDialog(null, 
-							"You WON !\nScore: " + score.getScore() + "\nCaught: " + score.getCaught() + "\nMissed: " + score.getMissed() + "\nTotal: " + score.getTotal()
+						"You WON !\nScore: " + score.getScore() + "\nCaught: " + score.getCaught() + "\nMissed: " + score.getMissed() + "\nTotal: " + score.getTotal()
 						);
+						endB.doClick();
 					}
 					updateTxt();
 				}
@@ -173,10 +174,11 @@ public class WordApp {
 										err.printStackTrace();
 									}
 									inputAudio.start();
-									endB.doClick();
+									w.stop();
 									JOptionPane.showMessageDialog(null, 
-										"You Lost !\nScore: " + score.getScore() + "\nCaught: " + score.getCaught() + "\nMissed: " + score.getMissed() + "\nTotal: " + score.getTotal()
+									"You Lost !\nScore: " + score.getScore() + "\nCaught: " + score.getCaught() + "\nMissed: " + score.getMissed() + "\nTotal: " + score.getTotal()
 									);
+									endB.doClick();
 								}
 							}
 						});
@@ -278,8 +280,6 @@ public class WordApp {
 			
 		words = new WordRecord[noWords];  //shared array of current words
 			
-		//[snip]
-		
 		setupGUI(frameX, frameY, yLimit);  
 		
 		int x_inc=(int)frameX/noWords;
@@ -288,10 +288,5 @@ public class WordApp {
 		for (int i=0; i<noWords; i++){
 			words[i] = new WordRecord(dict.getNewWord(),i*x_inc,yLimit);
 		}
-
-		for (WordRecord word : words) {
-			System.out.println(word.getWord() + ":" + word.getWord().length());
-		}
-
 	}
 }
